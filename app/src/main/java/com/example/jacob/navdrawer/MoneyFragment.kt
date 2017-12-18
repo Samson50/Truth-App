@@ -7,42 +7,52 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
-import android.widget.Spinner
+import android.widget.TextView
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONException
+import org.json.JSONObject
+import java.net.URL
 
 /**
  * Created by Jacob on 12/4/2017.
  */
 
-class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
+class MoneyFragment : Fragment(), View.OnClickListener {
 
-    private val TAG = "Fragment 2"
-    lateinit var option: Spinner
-    private val states = arrayOf("AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY")
-    private lateinit var drawer: NavDrawerActivity
+    private val TAG = "Fragment 10"
+
+    private var contributorNames = mutableListOf<String>()
+    private var contributorTotals = mutableListOf<String>()
+    private var contributorPACs = mutableListOf<String>()
     //var cont: Context? = null
 
     companion object {
-        //private val ARG_CAUGHT = "asdfadsf"
-        fun newInstance():Fragment {//newInstance(caught: Pokemon):
-            //val args: Bundle = Bundle()
-            //args.putSerializeable(ARG_CAUGHT, caught)
-            //val fragment = FirstFragment()
-            //fragment.arguments = args
-            //return fragment
-            return HomeFragment()
+        private val ARG_NAME = "NAME"
+        private val ARG_DESC = "DESC"
+        fun newInstance(name:String="default",description: String="default"):Fragment {//newInstance(name: String):
+            val args = Bundle()
+            args.putString(ARG_NAME, name)
+            args.putString(ARG_DESC, description)
+            val fragment = MoneyFragment()
+            fragment.arguments = args
+            return fragment
+        }
+    }
+
+    override fun onClick(p0: View?) {
+        when(p0!!.id) {
+            R.id.moneyMoreInfo -> {
+                //Do web view
+            }
         }
     }
 
     override fun onAttach(context: Context?) {
         Log.d(TAG, "onAttach")
         super.onAttach(context)
-        drawer = context as NavDrawerActivity
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,34 +60,25 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
         super.onCreate(savedInstanceState)
     }
 
-    override fun onNothingSelected(p0: AdapterView<*>?) {
-        Log.d(TAG,"Spinner not Selected")
-    }
-
-    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        //states.get(p2)
-        drawer.setState(states[p2])
-        Log.d(TAG,"Spinner Selected")
-    }
-
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
-        val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
-        option = rootView.findViewById(R.id.state_select)
-        option.adapter = ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,states)
-        option.onItemSelectedListener = this
+        val rootView = inflater!!.inflate(R.layout.fragment_contributions, container, false)
+        rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
+        rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String
+        rootView.findViewById<Button>(R.id.votingRecord).setOnClickListener(this)
         return rootView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         Log.d(TAG, "onActivityCreated")
         super.onActivityCreated(savedInstanceState)
-        val adapter = NewsFeedsAdapter(activity)
-        val newsView = view!!.findViewById<ListView>(R.id.home_news)
+        //val adapter = NewsFeedsAdapter(activity)
+        //val newsView = view!!.findViewById<ListView>(R.id.newsFeed)
+        //val name = arguments[ARG_NAME] as String
         doAsync {
-            adapter.getArticles("U.S.%20Congress")
+            //getContributors
             uiThread {
-                newsView.adapter = adapter
+                //fillContributions
             }
         }
     }

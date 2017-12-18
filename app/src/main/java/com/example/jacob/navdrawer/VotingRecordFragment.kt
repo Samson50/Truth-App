@@ -5,13 +5,11 @@ import android.content.Context
 import android.content.SearchRecentSuggestionsProvider
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.Filter
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import kotlinx.android.synthetic.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
@@ -20,10 +18,13 @@ import org.jetbrains.anko.uiThread
  * Created by Jacob on 12/4/2017.
  */
 
-class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnItemClickListener {
+class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnItemClickListener, TextView.OnEditorActionListener {
 
     private val TAG = "Fragment 3"
-    private val filterFragment = FilterFragment.newInstance()
+    private val filterFragment = FilterFragment.newInstance("votes")
+    private var page = 0
+    private var perPage = 20
+    private var searchString = ""
     //var cont: Context? = null
 
     companion object {
@@ -39,6 +40,52 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
         }
     }
 
+    fun setSearch(congress:String,bills:Boolean,amendments:Boolean,resolutions:Boolean,house:Boolean,senate:Boolean){
+        Log.d(TAG, "In searcher")
+        var search = ""
+        if (congress != "ALL") search += "&congress=$congress"
+        if (!(bills && amendments && resolutions && house && senate)){
+            search += "&params="
+            if (bills) search += '1'
+            else search += '0'
+            if (amendments) search += '1'
+            else search += '0'
+            if (resolutions) search += '1'
+            else search += '0'
+            if (house) search += '1'
+            else search += '0'
+            if (senate) search += '1'
+            else search += '0'
+        }
+        val votesAdapter = view!!.findViewById<ListView>(R.id.legis_votes).adapter as VotesAdapter
+        votesAdapter.setParams(searchString, search)
+        doAsync {
+            votesAdapter.getVotes()
+            uiThread {
+                votesAdapter.notifyDataSetChanged()
+            }
+        }
+    }
+
+    override fun onEditorAction(p0: TextView?, p1: Int, p2: KeyEvent?): Boolean {
+        Log.d("VRF", "key = %d".format(p1))//p2!!.keyCode == KeyEvent.KEYCODE_ENTER
+        if (p1 == 5) {
+            Log.d("VRF","In the thing")
+            searchString = p0!!.text.toString()
+            val votesAdapter = view!!.findViewById<ListView>(R.id.legis_votes).adapter as VotesAdapter
+            votesAdapter.setParams(searchString)
+            doAsync {
+                votesAdapter.getVotes()
+                uiThread {
+                    votesAdapter.notifyDataSetChanged()
+                }
+            }
+            return true
+        }
+        return false
+    }
+
+
     override fun onClick(p0: View?) {
         when(p0!!.id) {
             R.id.expand_search -> {
@@ -51,12 +98,27 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
                     childFragmentManager.beginTransaction().remove(curfrag).commit()
                 }
             }
-            R.id.search_next -> {
-                view!!.findViewById<ListView>(R.id.legis_votes).adapter.notifyDataSetChanged()
-                Log.d("VOTES", "next")
-            }
             R.id.search_back -> {
-                Log.d("VOTES", "back")
+                if (page > 0) {
+                    page -= 1
+                    val adapter = view!!.findViewById<ListView>(R.id.legis_votes).adapter as VotesAdapter
+                    doAsync {
+                        adapter.updatePage(page,perPage)
+                        uiThread {
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+            }
+            R.id.search_next -> {
+                page += 1
+                val adapter = view!!.findViewById<ListView>(R.id.legis_votes).adapter as VotesAdapter
+                doAsync {
+                    adapter.updatePage(page,perPage)
+                    uiThread {
+                        adapter.notifyDataSetChanged()
+                    }
+                }
             }
         }
     }
@@ -64,11 +126,12 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
     //p0: List    p1: List item clicked    p2: Index of clicked item
     override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
         // List Item index is p2
-        //val exText = p1!!.findViewById<TextView>(R.id.articleHeadline).text.toString()
-        //val fragment = BillFragment.newInstance("H.R.1234", "115", "Robert Dunder", "[D-PA]", "Free Paper of Pensylvania Act")
-       // fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
+        val billName = p1!!.findViewById<TextView>(R.id.vote_bill).text.toString()
+        val billCongress = p1.findViewById<TextView>(R.id.vote_congress).text.toString()
+        val fragment = BillFragment.newInstance(billName=billName,congress=billCongress)
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
         //p1!!.findViewById<View>(p2).findViewById<TextView>(R.id.articleHeadline).text.toString()
-        Log.d("VOTES", "clocked %d".format(p2))//"Vote Clicker %d".format(p2))
+        Log.d("VOTES", "clicked %d".format(p2))//"Vote Clicker %d".format(p2))
     }
 
     override fun onAttach(context: Context?) {
@@ -88,6 +151,7 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String
         rootView.findViewById<ListView>(R.id.legis_votes).onItemClickListener = this//setOnItemClickListener(this)
         //votes_list.adapter =
+        rootView.findViewById<EditText>(R.id.search_option).setOnEditorActionListener(this)
         rootView.findViewById<TextView>(R.id.expand_search).setOnClickListener(this)
         rootView.findViewById<TextView>(R.id.search_next).setOnClickListener(this)
         rootView.findViewById<TextView>(R.id.search_back).setOnClickListener(this)

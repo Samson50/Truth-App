@@ -10,7 +10,6 @@ import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import kotlinx.android.synthetic.main.activity_nav_drawer.*
 import kotlinx.android.synthetic.main.app_bar_nav_drawer.*
 //https://developers.google.com/identity/sign-in/android/start-integrating
@@ -18,20 +17,16 @@ import kotlinx.android.synthetic.main.app_bar_nav_drawer.*
 
 
 class NavDrawerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
+    private var userState = "IL"
 
-    private val UserState = "IL"
+    fun setState(state:String) {
+        userState = state
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_nav_drawer)
         setSupportActionBar(toolbar)
-
-        /*
-        fab.setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
-        */
 
         val toggle = ActionBarDrawerToggle(
                 this, drawer_layout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -46,23 +41,6 @@ class NavDrawerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
                     .add(R.id.flContent, HomeFragment.newInstance(), "Default")
                     .commit()
         }
-    }
-
-    fun switchFrag(fView: View) {
-        var fragment: Fragment? = null
-        when (fView.id) {
-            R.id.test_button -> {
-                fragment = LegislatorFragment.newInstance()
-            }
-            else -> {
-                fragment = HomeFragment.newInstance()
-            }
-        }
-
-        val fragmentManager = supportFragmentManager
-        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
-
-        Log.d("MAIN", "Successfully called back")
     }
 
     override fun onBackPressed() {
@@ -94,7 +72,7 @@ class NavDrawerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSe
         var fragment: Fragment? = null
         when (item.itemId) {
             R.id.legis_profile -> {
-                fragment = LegislatorsListFragment.newInstance(UserState)
+                fragment = LegislatorsListFragment.newInstance(userState)
             }
             R.id.home_menu -> {
                 fragment = HomeFragment.newInstance()

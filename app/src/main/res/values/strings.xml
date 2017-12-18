@@ -24,4 +24,11 @@
     <string name="no_info">None</string>
     <string name="search_next"><![CDATA[>]]></string>
     <string name="search_back"><![CDATA[<]]></string>
+    <string name="more_information">More Information</string>
+    <string name="money_default">$10,000,000</string>
+    <string name="contributor_name_default">Contributor Name</string>
+    <string name="column_contributor_name">Contributor Name</string>
+    <string name="column_total">Total</string>
+    <string name="column_PAC">PAC</string>
+    <string name="header_top_contributors">Top Contributors</string>
 </resources>

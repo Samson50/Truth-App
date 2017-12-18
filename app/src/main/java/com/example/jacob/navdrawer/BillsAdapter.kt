@@ -27,10 +27,32 @@ class BillsAdapter(context: Context): BaseAdapter() {
     private var summaries: MutableList<String> = mutableListOf()
 
     private var numBills: Int = 0
+    private var page: Int = 0
+    private var perPage: Int = 20
+    private var search = ""
+    private var searchParameters = ""
     //private var images: MutableList<ImageView> = mutableListOf()
 
     init {
         //mContext = context
+    }
+
+    fun setParams(searchString: String="", parameters:String = ""){
+        if (parameters!=""){
+            searchParameters = parameters
+        }
+        if (searchString != "") {
+            search = "$searchParameters&sname=$searchString"
+        }
+        else {
+            search = searchParameters
+        }
+    }
+
+    fun updatePage(p:Int,perp:Int){
+        page = p
+        perPage = perp
+        getBills()
     }
 
     private fun parse(json: String): JSONObject? {
@@ -43,10 +65,9 @@ class BillsAdapter(context: Context): BaseAdapter() {
         return jsonObject
     }
 
-    fun getBills(congress: Int) {
-        val p = 0
-        val perPage = 10
-        val url = "http://192.168.1.64/api/bill/getBills.php?p=%d&perp=%d".format(p, perPage)
+    fun getBills() {
+        val url = "http://192.168.1.64/api/bill/getBills.php?p=$page&perp=$perPage$search"
+        Log.d("BILLADAPT", url)
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONArray("value")
         numBills = json.length()

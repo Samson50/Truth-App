@@ -11,6 +11,9 @@ import android.widget.ExpandableListView
 import android.widget.TextView
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONException
+import org.json.JSONObject
+import java.net.URL
 
 /**
  * Created by Jacob on 12/4/2017.
@@ -28,7 +31,7 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
         private val ARG_SPON = "SPONSOR"
         private val ARG_SPOD = "SDESC"
         private val ARG_SUMM = "SUMMARY"
-        fun newInstance(billName: String, congress: String, sponsor: String, sponsor_description: String, summary: String):Fragment {//newInstance(state: String):
+        fun newInstance(billName: String, congress: String, sponsor: String="default", sponsor_description: String="default", summary: String="none"):Fragment {//newInstance(state: String):
             val args = Bundle()
             args.putString(ARG_NAME, billName)
             args.putString(ARG_CONG, congress)
@@ -47,6 +50,13 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
                 val name = view!!.findViewById<TextView>(R.id.basic_sponsor).text.toString()
                 val description = view.findViewById<TextView>(R.id.basic_description).text.toString()
                 val fragment = LegislatorFragment.newInstance(name, description)
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
+                return true
+            }
+            3 -> {
+                val name = view!!.findViewById<TextView>(R.id.list_item_info).text.toString()
+                val congress = arguments[ARG_CONG] as String
+                val fragment = BillFragment.newInstance(name, congress)
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
                 return true
             }
@@ -76,6 +86,40 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
         super.onCreate(savedInstanceState)
     }
 
+    private fun parse(json: String): JSONObject? {
+        var jsonObject: JSONObject? = null
+        try {
+            jsonObject = JSONObject(json)
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+        return jsonObject
+    }
+
+    private fun getInfo() {
+        val url = "http://192.168.1.64/api/bill/getInfo.php?name=%27"+arguments[ARG_NAME]+"%27&con=%27"+arguments[ARG_CONG]+"%27"
+        val result = URL(url).readText()
+        val article = parse(result)!!.getJSONArray("value").getJSONObject(0)
+        val sponsor = article.getString("FirstName")+" "+article.getString("LastName")+" ["+article.getString("party")+"-"+article.getString("state")+"]"
+        Log.d("VOTES",sponsor)
+        arguments.putString(ARG_SPON,sponsor)//= sponsor
+        val job: String =
+                if (article.getString("job").contains("H",true)) "Representative, "
+                else "Senator, "
+        Log.d("VOTES",job)
+        val spon_des = job+article.getString("first")+"-Present"
+        Log.d("VOTES", spon_des)
+        arguments.putString(ARG_SPOD,spon_des)
+        val summary = article.getString("summary")
+        arguments.putString(ARG_SUMM,summary)
+    }
+
+    private fun updateInfo() {
+        view!!.findViewById<TextView>(R.id.sponsor).text = arguments[ARG_SPON] as String
+        view!!.findViewById<TextView>(R.id.sponsor_description).text = arguments[ARG_SPOD] as String
+        view!!.findViewById<TextView>(R.id.bill_title).text = arguments[ARG_SUMM] as String
+    }
+
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
         val rootView = inflater!!.inflate(R.layout.fragment_bill, container, false)
@@ -85,6 +129,14 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
         rootView.findViewById<TextView>(R.id.sponsor_description).text = arguments[ARG_SPOD] as String
         rootView.findViewById<ExpandableListView>(R.id.bill_details).setOnChildClickListener(this)
         rootView.findViewById<TextView>(R.id.sponsor).setOnClickListener(this)
+        if (arguments[ARG_SPON] as String == "default"){
+            doAsync {
+                getInfo()
+                uiThread {
+                    updateInfo()
+                }
+            }
+        }
         //val voteList = rootView.findViewById<ListView>(R.id.legis_votes)
         //voteList.setOnClickListener(this)
         //val toggleButton = rootView.findViewById<TextView>(R.id.expand_search)

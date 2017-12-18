@@ -25,10 +25,34 @@ class VotesAdapter(context: Context): BaseAdapter() {
     private var questions: MutableList<String> = mutableListOf()
 
     private var numVotes: Int = 0
+    private var page = 0
+    private var perPage = 20
+    private var firstName = ""
+    private var lastName = ""
+    private var search = ""
+    private var searchParameters = ""
     //private var images: MutableList<ImageView> = mutableListOf()
 
     init {
         //mContext = context
+    }
+
+    fun setParams(searchString: String, parameters:String = ""){
+        if (parameters!=""){
+            searchParameters = parameters
+        }
+        if (searchString != "") {
+            search = "$searchParameters&sname=$searchString"
+        }
+        else {
+            search = searchParameters
+        }
+    }
+
+    fun updatePage(p:Int,perp:Int){
+        page = p
+        perPage = perp
+        getVotes(firstName,lastName)
     }
 
     private fun parse(json: String): JSONObject? {
@@ -41,10 +65,10 @@ class VotesAdapter(context: Context): BaseAdapter() {
         return jsonObject
     }
 
-    fun getVotes(fname: String, lname: String) {
-        val p = 0
-        val perPage = 10
-        val url = "http://192.168.1.64/api/legislator/getVotes.php?fname=%27"+fname+"%27&lname=%27"+lname.replace(" ","%20")+"%27"
+    fun getVotes(fname:String = firstName, lname: String = lastName) {
+        firstName = fname
+        lastName = lname
+        val url = "http://192.168.1.64/api/legislator/getVotes.php?fname=%27"+fname+"%27&lname=%27"+lname.replace(" ","%20")+"%27&p=$page&perp=$perPage$search"
         Log.d("VOTES", url)
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONArray("value")
@@ -69,7 +93,11 @@ class VotesAdapter(context: Context): BaseAdapter() {
 
         vote.findViewById<TextView>(R.id.vote_congress).text = congresses[position]
         vote.findViewById<TextView>(R.id.vote_bill).text = names[position]
-        vote.findViewById<TextView>(R.id.vote_cast).text = choices[position]
+        val voteCast = vote.findViewById<TextView>(R.id.vote_cast)
+        if (choices[position] == "Yea" || choices[position] == "Aye") voteCast.setBackgroundColor(mContext.resources.getColor(R.color.yes))
+        else if (choices[position] == "Nay" || choices[position] == "No") voteCast.setBackgroundColor(mContext.resources.getColor(R.color.no))
+        else if (choices[position] == "Not") voteCast.setBackgroundColor(mContext.resources.getColor(R.color.colorBar))
+        voteCast.text = choices[position]
         vote.findViewById<TextView>(R.id.vote_question).text = questions[position]
         return vote
     }

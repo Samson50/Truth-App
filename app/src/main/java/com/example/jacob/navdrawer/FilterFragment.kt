@@ -7,8 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 
@@ -16,30 +15,57 @@ import org.jetbrains.anko.uiThread
  * Created by Jacob on 12/4/2017.
  */
 
-class FilterFragment : Fragment(), View.OnClickListener {
+class FilterFragment : Fragment(), View.OnClickListener, AdapterView.OnItemSelectedListener {
 
     private val TAG = "Fragment 3"
+    private val congresses = arrayOf("114","113")
+    private lateinit var option: Spinner
+
+    private var congress = "ALL"
+    private var bills = true
+    private var amendbments = true
+    private var resolutions = true
+    private var house = true
+    private var senate = true
+
     //private var toggler: ExpandableRelativeLayout? = null
     //var cont: Context? = null
 
     companion object {
-        //private val ARG_CAUGHT = "asdfadsf"
-        fun newInstance():Fragment {//newInstance(caught: Pokemon):
-            //val args: Bundle = Bundle()
-            //args.putSerializeable(ARG_CAUGHT, caught)
-            //val fragment = FirstFragment()
-            //fragment.arguments = args
-            //return fragment
-            return FilterFragment()
+        private val ARG_PARENT = "PARENT"
+        fun newInstance(parent: String):Fragment {//newInstance(caught: Pokemon):
+            val args = Bundle()
+            args.putString(ARG_PARENT, parent)
+            val fragment = FilterFragment()
+            fragment.arguments = args
+            return fragment
         }
+    }
+
+    override fun onNothingSelected(p0: AdapterView<*>?) {
+        Log.d(TAG, "Nothing Selected")
+    }
+
+    override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        congress = congresses[p2]
     }
 
     override fun onClick(p0: View?) {
         when(p0!!.id) {
-            R.id.expand_search -> {
-                //childFragmentManager.beginTransaction().replace(R.id.flContent, fragment).commit()
-                //toggler!!.toggle()
-                Log.d(TAG, "TEST")
+            R.id.buttonApply -> {
+                bills = view!!.findViewById<CheckBox>(R.id.checkBills).isChecked
+                amendbments = view!!.findViewById<CheckBox>(R.id.checkAmendments).isChecked
+                resolutions = view!!.findViewById<CheckBox>(R.id.checkResolutions).isChecked
+                house = view!!.findViewById<CheckBox>(R.id.checkHouse).isChecked
+                senate = view!!.findViewById<CheckBox>(R.id.checkSenate).isChecked
+                if (arguments[ARG_PARENT] == "votes") {
+                    val parent = parentFragment as VotingRecordFragment
+                    parent.setSearch(congress,bills,amendbments,resolutions,house,senate)
+                }
+                else {
+                    val parent = parentFragment as BillsListFragment
+                    parent.setSearch(congress,bills,amendbments,resolutions,house,senate)
+                }
             }
         }
     }
@@ -57,6 +83,10 @@ class FilterFragment : Fragment(), View.OnClickListener {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
         val rootView = inflater!!.inflate(R.layout.search_layout, container, false)
+        option = rootView.findViewById(R.id.spinnerCongress)
+        option.adapter = ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,congresses)
+        option.onItemSelectedListener = this
+        rootView.findViewById<ImageView>(R.id.buttonApply).setOnClickListener(this)
         return rootView
     }
 

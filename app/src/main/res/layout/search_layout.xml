@@ -7,62 +7,133 @@
     android:layout_height="match_parent">
 
     <CheckBox
-        android:id="@+id/checkBox"
+        android:id="@+id/checkBills"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:text="Bills"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:textSize="13sp"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/checkType" />
 
     <CheckBox
-        android:id="@+id/checkBox2"
+        android:id="@+id/checkHouse"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:text="Amdt."
+        android:text="House"
         android:textSize="14sp"
-        app:layout_constraintEnd_toStartOf="@+id/checkBox3"
-        app:layout_constraintStart_toEndOf="@+id/checkBox"
-        app:layout_constraintTop_toTopOf="@+id/checkBox" />
+        android:checked="true"
+        app:layout_constraintEnd_toStartOf="@+id/spinnerCongress"
+        app:layout_constraintStart_toEndOf="@+id/checkBills"
+        app:layout_constraintTop_toTopOf="@+id/checkBills" />
 
     <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="120dp"
+        android:id="@+id/spinnerCongress"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginTop="8dp"
         android:dropDownWidth="120dp"
-        app:layout_constraintBottom_toBottomOf="@+id/checkBox5"
+        app:layout_constraintBottom_toTopOf="@+id/checkSenate"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/checkBox5" />
+        app:layout_constraintTop_toBottomOf="@+id/checkChamber" />
 
     <CheckBox
-        android:id="@+id/checkBox3"
+        android:id="@+id/checkAmendments"
         android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:text="Amendments"
+        android:textSize="12sp"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="@+id/checkBills"
+        app:layout_constraintTop_toBottomOf="@+id/checkBills" />
+
+    <CheckBox
+        android:id="@+id/checkSenate"
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:text="Senate"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="@+id/checkHouse"
+        app:layout_constraintTop_toBottomOf="@+id/checkHouse" />
+
+    <TextView
+        android:id="@+id/checkType"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
-        android:text="Res."
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/checkBox2" />
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Type"
+        app:layout_constraintEnd_toEndOf="@+id/checkBills"
+        app:layout_constraintStart_toStartOf="@+id/checkBills"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <CheckBox
-        android:id="@+id/checkBox4"
+        android:id="@+id/checkResolutions"
         android:layout_width="110dp"
         android:layout_height="wrap_content"
-        android:text="Joint.Res."
-        app:layout_constraintStart_toStartOf="@+id/checkBox"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox" />
+        android:text="Resolutions"
+        android:textSize="12sp"
+        android:checked="true"
+        app:layout_constraintStart_toStartOf="@+id/checkAmendments"
+        app:layout_constraintTop_toBottomOf="@+id/checkAmendments" />
 
-    <CheckBox
-        android:id="@+id/checkBox5"
-        android:layout_width="110dp"
+    <TextView
+        android:id="@+id/checkChamber"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Con.Res."
-        app:layout_constraintStart_toStartOf="@+id/checkBox2"
-        app:layout_constraintTop_toBottomOf="@+id/checkBox2" />
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Chamber"
+        app:layout_constraintBottom_toTopOf="@+id/checkHouse"
+        app:layout_constraintEnd_toEndOf="@+id/checkHouse"
+        app:layout_constraintStart_toStartOf="@+id/checkHouse" />
+
+    <TextView
+        android:id="@+id/checkCongress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="Congress"
+        app:layout_constraintBottom_toTopOf="@+id/spinnerCongress"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerCongress"
+        app:layout_constraintStart_toStartOf="@+id/spinnerCongress" />
+
+    <ImageView
+        android:id="@+id/buttonApply"
+        android:layout_width="122dp"
+        android:layout_height="47dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/checkResolutions"
+        app:layout_constraintEnd_toEndOf="@+id/spinnerCongress"
+        app:layout_constraintStart_toStartOf="@+id/spinnerCongress"
+        app:srcCompat="@drawable/apply_button" />
+
+    <TextView
+        android:id="@+id/textApply"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="Apply"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonApply"
+        app:layout_constraintEnd_toEndOf="@+id/buttonApply"
+        app:layout_constraintStart_toStartOf="@+id/buttonApply"
+        app:layout_constraintTop_toTopOf="@+id/buttonApply" />
 
 </android.support.constraint.ConstraintLayout>

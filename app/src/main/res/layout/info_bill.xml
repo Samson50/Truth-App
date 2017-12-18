@@ -58,7 +58,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:text="Sponsor Name"
-        app:layout_constraintEnd_toStartOf="@+id/textView2"
+        app:layout_constraintEnd_toStartOf="@+id/checkType"
         app:layout_constraintStart_toEndOf="@+id/info_tag_sponsor"
         app:layout_constraintTop_toTopOf="@+id/info_tag_sponsor" />
 
