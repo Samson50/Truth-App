@@ -97,7 +97,7 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
     }
 
     private fun getInfo() {
-        val url = "http://192.168.1.64/api/bill/getInfo.php?name=%27"+arguments[ARG_NAME]+"%27&con=%27"+arguments[ARG_CONG]+"%27"
+        val url = "http://192.168.1.72/api/bill/getInfo.php?name=%27"+arguments[ARG_NAME]+"%27&con=%27"+arguments[ARG_CONG]+"%27"
         val result = URL(url).readText()
         val article = parse(result)!!.getJSONArray("value").getJSONObject(0)
         val sponsor = article.getString("FirstName")+" "+article.getString("LastName")+" ["+article.getString("party")+"-"+article.getString("state")+"]"
