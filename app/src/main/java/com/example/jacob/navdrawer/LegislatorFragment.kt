@@ -46,6 +46,12 @@ class LegislatorFragment : Fragment(), View.OnClickListener {
                 val fragment = VotingRecordFragment.newInstance(name, desc)
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
             }
+            R.id.followTheMoney -> {
+                val name = arguments[ARG_NAME] as String
+                val desc = arguments[ARG_DESC] as String
+                val fragment = MoneyFragment.newInstance(name, desc)
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
+            }
         }
     }
 
@@ -65,6 +71,7 @@ class LegislatorFragment : Fragment(), View.OnClickListener {
         rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String
         rootView.findViewById<Button>(R.id.votingRecord).setOnClickListener(this)
+        rootView.findViewById<Button>(R.id.followTheMoney).setOnClickListener(this)
         return rootView
     }
 

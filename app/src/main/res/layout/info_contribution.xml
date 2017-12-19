@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/headerTopContributors"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_marginTop="8dp"
+        android:background="#8ce0ff"
+        android:gravity="center"
+        android:text="@string/header_top_contributors"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/columnPAC"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/column_PAC"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/headerTopContributors" />
+
+    <TextView
+        android:id="@+id/columnTotal"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/column_total"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/columnPAC"
+        app:layout_constraintEnd_toStartOf="@+id/columnPAC"
+        app:layout_constraintTop_toTopOf="@+id/columnPAC" />
+
+    <TextView
+        android:id="@+id/columnName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/column_contributor_name"
+        android:textColor="@android:color/black"
+        app:layout_constraintBottom_toBottomOf="@+id/columnTotal"
+        app:layout_constraintEnd_toStartOf="@+id/columnTotal"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/columnTotal" />
+
+    <TextView
+        android:id="@+id/contributorPAC1"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorTotal1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/contributorTotal1" />
+
+    <TextView
+        android:id="@+id/contributorTotal1"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorName1"
+        app:layout_constraintEnd_toStartOf="@+id/contributorPAC1"
+        app:layout_constraintTop_toTopOf="@+id/contributorName1" />
+
+    <TextView
+        android:id="@+id/contributorName1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/contributor_name_default"
+        app:layout_constraintEnd_toStartOf="@+id/contributorTotal1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/columnName" />
+
+    <TextView
+        android:id="@+id/contributorPAC2"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorTotal2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/contributorTotal2" />
+
+    <TextView
+        android:id="@+id/contributorTotal2"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorName2"
+        app:layout_constraintEnd_toStartOf="@+id/contributorPAC2"
+        app:layout_constraintTop_toTopOf="@+id/contributorName2" />
+
+    <TextView
+        android:id="@+id/contributorName2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/contributor_name_default"
+        app:layout_constraintEnd_toStartOf="@+id/contributorTotal2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contributorName1" />
+
+    <TextView
+        android:id="@+id/contributorPAC3"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorTotal3"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/contributorTotal3" />
+
+    <TextView
+        android:id="@+id/contributorTotal3"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorName3"
+        app:layout_constraintEnd_toStartOf="@+id/contributorPAC3"
+        app:layout_constraintTop_toTopOf="@+id/contributorName3" />
+
+    <TextView
+        android:id="@+id/contributorName3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/contributor_name_default"
+        app:layout_constraintEnd_toStartOf="@+id/contributorTotal3"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contributorName2" />
+
+    <TextView
+        android:id="@+id/contributorPAC4"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorTotal4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/contributorTotal4" />
+
+    <TextView
+        android:id="@+id/contributorTotal4"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorName4"
+        app:layout_constraintEnd_toStartOf="@+id/contributorPAC4"
+        app:layout_constraintTop_toTopOf="@+id/contributorName4" />
+
+    <TextView
+        android:id="@+id/contributorName4"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/contributor_name_default"
+        app:layout_constraintEnd_toStartOf="@+id/contributorTotal4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contributorName3" />
+
+    <TextView
+        android:id="@+id/contributorPAC5"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorTotal5"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/contributorTotal5" />
+
+    <TextView
+        android:id="@+id/contributorTotal5"
+        android:layout_width="85dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:text="@string/money_default"
+        app:layout_constraintBottom_toBottomOf="@+id/contributorName5"
+        app:layout_constraintEnd_toStartOf="@+id/contributorPAC5"
+        app:layout_constraintTop_toTopOf="@+id/contributorName5"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/contributorName5"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:text="@string/contributor_name_default"
+        app:layout_constraintEnd_toStartOf="@+id/contributorTotal5"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/contributorName4" />
+
+</android.support.constraint.ConstraintLayout>

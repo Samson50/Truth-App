@@ -1,6 +1,8 @@
 package com.example.jacob.navdrawer
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +24,7 @@ class NewsFeedsAdapter(context: Context): BaseAdapter() {
     private var titles: MutableList<String> = mutableListOf()
     private var descrs: MutableList<String> = mutableListOf()
     private var links: MutableList<String> = mutableListOf()
-    //private var images: MutableList<ImageView> = mutableListOf()
+    private var images: MutableList<Bitmap> = mutableListOf()
 
     init {
         //mContext = context
@@ -49,22 +51,16 @@ class NewsFeedsAdapter(context: Context): BaseAdapter() {
         //var holder: ImageView? = null
         searchData = json
         for (i in 0..5) {
-            val article = json!!.getJSONArray("articles").get(i)
-            if (article is JSONObject) {
-                val title = article.get("title")
-                if (title is String) titles.add(i,title)
-                val descr = article.get("description")
-                if (descr is String) descrs.add(i,descr)
-                val link  = article.get("url")
-                if (link is String) links.add(i,link)
-                /*
-                val img = article.get("urlToImage")
-                if (img is String) {
-                    Picasso.with(mContext).load(img).into(holder)
-                    if(holder!=null) images.add(i, holder)
-                }
-                */
-            }
+            val article = json!!.getJSONArray("articles").getJSONObject(i)
+            val title = article.getString("title")
+            titles.add(i,title)
+            val descr = article.getString("description")
+            descrs.add(i,descr)
+            val link  = article.getString("url")
+            links.add(i,link)
+            val img = article.getString("urlToImage")
+            val bmp = BitmapFactory.decodeStream(URL(img).openConnection().getInputStream())
+            images.add(i,bmp)
         }
     }
 
@@ -75,7 +71,8 @@ class NewsFeedsAdapter(context: Context): BaseAdapter() {
 
         article.findViewById<TextView>(R.id.articleHeadline).text = titles[position]
         article.findViewById<TextView>(R.id.descriptionText).text = descrs[position]
-        //article.findViewById<ImageView>(R.id.articleImage).setImageDrawable(images[position].drawable)
+        article.findViewById<TextView>(R.id.hyperLink).text = links[position]
+        article.findViewById<ImageView>(R.id.articleImage).setImageBitmap(images[position])
         return article
     }
 

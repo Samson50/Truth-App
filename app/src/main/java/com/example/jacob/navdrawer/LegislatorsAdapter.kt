@@ -35,7 +35,7 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
     }
 
     fun getLegislators(state: String) {
-        val url = "http://192.168.1.64/api/legislator/getState.php?id=%27$state%27"
+        val url = "http://192.168.1.72/api/legislator/getState.php?id=%27$state%27"
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONArray("value")
         var hIndex = 0

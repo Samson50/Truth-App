@@ -3,6 +3,8 @@ package com.example.jacob.navdrawer
 import android.support.v4.app.Fragment
 import android.content.Context
 import android.os.Bundle
+import android.support.constraint.ConstraintLayout
+import android.text.TextUtils.replace
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -42,6 +44,69 @@ class MoneyFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun parse(json: String): JSONObject? {
+        var jsonObject: JSONObject? = null
+        try {
+            jsonObject = JSONObject(json)
+        } catch (e: JSONException) {
+            Log.d("ADAPT", "JSON Parse failed")
+            e.printStackTrace()
+        }
+        return jsonObject
+    }
+
+    private fun fillContributions(organizations: View, industries: View){
+        organizations.findViewById<TextView>(R.id.contributorName1).text = contributorNames[0]
+        organizations.findViewById<TextView>(R.id.contributorPAC1).text = contributorPACs[0]
+        organizations.findViewById<TextView>(R.id.contributorTotal1).text = contributorTotals[0]
+        organizations.findViewById<TextView>(R.id.contributorName2).text = contributorNames[1]
+        organizations.findViewById<TextView>(R.id.contributorPAC2).text = contributorPACs[1]
+        organizations.findViewById<TextView>(R.id.contributorTotal2).text = contributorTotals[1]
+        organizations.findViewById<TextView>(R.id.contributorName3).text = contributorNames[2]
+        organizations.findViewById<TextView>(R.id.contributorPAC3).text = contributorPACs[2]
+        organizations.findViewById<TextView>(R.id.contributorTotal3).text = contributorTotals[2]
+        organizations.findViewById<TextView>(R.id.contributorName4).text = contributorNames[3]
+        organizations.findViewById<TextView>(R.id.contributorPAC4).text = contributorPACs[3]
+        organizations.findViewById<TextView>(R.id.contributorTotal4).text = contributorTotals[3]
+        organizations.findViewById<TextView>(R.id.contributorName5).text = contributorNames[4]
+        organizations.findViewById<TextView>(R.id.contributorPAC5).text = contributorPACs[4]
+        organizations.findViewById<TextView>(R.id.contributorTotal5).text = contributorTotals[4]
+        industries.findViewById<TextView>(R.id.contributorName1).text = contributorNames[5]
+        industries.findViewById<TextView>(R.id.contributorPAC1).text = contributorPACs[5]
+        industries.findViewById<TextView>(R.id.contributorTotal1).text = contributorTotals[5]
+        industries.findViewById<TextView>(R.id.contributorName2).text = contributorNames[6]
+        industries.findViewById<TextView>(R.id.contributorPAC2).text = contributorPACs[6]
+        industries.findViewById<TextView>(R.id.contributorTotal2).text = contributorTotals[6]
+        industries.findViewById<TextView>(R.id.contributorName3).text = contributorNames[7]
+        industries.findViewById<TextView>(R.id.contributorPAC3).text = contributorPACs[7]
+        industries.findViewById<TextView>(R.id.contributorTotal3).text = contributorTotals[7]
+        industries.findViewById<TextView>(R.id.contributorName4).text = contributorNames[8]
+        industries.findViewById<TextView>(R.id.contributorPAC4).text = contributorPACs[8]
+        industries.findViewById<TextView>(R.id.contributorTotal4).text = contributorTotals[8]
+        industries.findViewById<TextView>(R.id.contributorName5).text = contributorNames[9]
+        industries.findViewById<TextView>(R.id.contributorPAC5).text = contributorPACs[9]
+        industries.findViewById<TextView>(R.id.contributorTotal5).text = contributorTotals[9]
+
+    }
+
+    private fun getContributions(fname:String,lname:String) {
+        Log.d(TAG,fname)
+        Log.d(TAG,lname)
+        val url = "http://192.168.1.72/api/legislator/getContributions.php?fname=$fname&lname="+lname.replace(" ","%20")
+        val result = URL(url).readText()
+        val json = parse(result)!!.getJSONArray("value")
+        Log.d(TAG, "Items: %d".format(json.length()))
+        for (i in 0 until(10)) {
+            Log.d(TAG, "%d".format(i))
+            val total = json.getJSONObject(i*2)
+            val pac = json.getJSONObject(i*2+1)
+            contributorNames.add(i,total.getString("Name"))
+            contributorPACs.add(i,pac.getString("Amount"))
+            contributorTotals.add(i,total.getString("Amount"))
+        }
+
+    }
+
     override fun onClick(p0: View?) {
         when(p0!!.id) {
             R.id.moneyMoreInfo -> {
@@ -65,20 +130,22 @@ class MoneyFragment : Fragment(), View.OnClickListener {
         val rootView = inflater!!.inflate(R.layout.fragment_contributions, container, false)
         rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String
-        rootView.findViewById<Button>(R.id.votingRecord).setOnClickListener(this)
         return rootView
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         Log.d(TAG, "onActivityCreated")
         super.onActivityCreated(savedInstanceState)
-        //val adapter = NewsFeedsAdapter(activity)
-        //val newsView = view!!.findViewById<ListView>(R.id.newsFeed)
-        //val name = arguments[ARG_NAME] as String
+        val organizations = view!!.findViewById<ConstraintLayout>(R.id.contributor1)
+        val industries = view!!.findViewById<ConstraintLayout>(R.id.contributor2)
         doAsync {
-            //getContributors
+            val name = arguments[ARG_NAME] as String
+            val fname = (name).split(' ')[0]
+            val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
+            getContributions(fname, lname)
             uiThread {
-                //fillContributions
+                Log.d("VOTES", "In UI Thread")
+                fillContributions(organizations, industries)
             }
         }
     }
