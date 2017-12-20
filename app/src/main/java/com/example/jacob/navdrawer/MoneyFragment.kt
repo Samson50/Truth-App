@@ -14,6 +14,7 @@ import android.widget.ListView
 import android.widget.TextView
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
@@ -29,6 +30,7 @@ class MoneyFragment : Fragment(), View.OnClickListener {
     private var contributorNames = mutableListOf<String>()
     private var contributorTotals = mutableListOf<String>()
     private var contributorPACs = mutableListOf<String>()
+    private var CID = ""
     //var cont: Context? = null
 
     companion object {
@@ -89,6 +91,14 @@ class MoneyFragment : Fragment(), View.OnClickListener {
 
     }
 
+    fun getCID(fname: String, lname:String){
+        val url = "http://192.168.1.72/api/legislator/getCID.php?fname="+fname+"&lname="+lname.replace(" ","%20")
+        Log.d("VOTES", url)
+        val result = URL(url).readText()
+        CID = JSONArray(result).getJSONObject(0).getString("CID")
+
+    }
+
     private fun getContributions(fname:String,lname:String) {
         Log.d(TAG,fname)
         Log.d(TAG,lname)
@@ -111,6 +121,9 @@ class MoneyFragment : Fragment(), View.OnClickListener {
         when(p0!!.id) {
             R.id.moneyMoreInfo -> {
                 //Do web view
+                val url = "https://www.opensecrets.org/members-of-congress/summary?cid=N"+CID.padStart(8,'0')+"&cycle=2018&type=C"
+                val fragment = WebFragment.newInstance(url)
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
             }
         }
     }
@@ -130,6 +143,7 @@ class MoneyFragment : Fragment(), View.OnClickListener {
         val rootView = inflater!!.inflate(R.layout.fragment_contributions, container, false)
         rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String
+        rootView.findViewById<Button>(R.id.moneyMoreInfo).setOnClickListener(this)
         return rootView
     }
 
@@ -142,6 +156,7 @@ class MoneyFragment : Fragment(), View.OnClickListener {
             val name = arguments[ARG_NAME] as String
             val fname = (name).split(' ')[0]
             val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
+            getCID(fname,lname)
             getContributions(fname, lname)
             uiThread {
                 Log.d("VOTES", "In UI Thread")

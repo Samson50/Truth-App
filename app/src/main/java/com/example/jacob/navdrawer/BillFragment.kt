@@ -1,12 +1,15 @@
 package com.example.jacob.navdrawer
 
+import android.content.ContentValues.TAG
 import android.support.v4.app.Fragment
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils.split
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ExpandableListView
 import android.widget.TextView
 import org.jetbrains.anko.doAsync
@@ -64,6 +67,38 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
         return false
     }
 
+    private fun getChamberType(name: String): String {
+        when {
+            name.contains("H.R.") -> return "house-bill"
+            name.contains("H.Amdt.") -> return "house-amendment"
+            name.contains("H.Res.") -> return "house-resolution"
+            name.contains("H.J.Res.") -> return "house-joint-resolution"
+            name.contains("H.Con.Res.") -> return "house-concurrent-resolution"
+            name.contains("S.Amdt.") -> return "senate-amendment"
+            name.contains("S.Res.") -> return "senate-resolution"
+            name.contains("S.J.Res.") -> return "senate-joint-resolution"
+            name.contains("S.Con.Res.") -> return "senate-concurrent-resolution"
+            name.contains("S.") -> return "house-amendment"
+        }
+        return "fail"
+    }
+
+    private fun getType(name: String): String {
+        return when {
+            name.contains("Amdt.") -> "amendment"
+            else -> "bill"
+        }
+    }
+
+    private fun getCongress(congress: String): String {
+        return when {
+            congress[congress.lastIndex] == '1' -> congress+"st-congress"
+            congress[congress.lastIndex] == '2' -> congress+"nd-congress"
+            congress[congress.lastIndex] == '3' -> congress+"rd-congress"
+            else -> congress+"th-congress"
+        }
+    }
+
     override fun onClick(view: View?) {
         when(view!!.id) {
             R.id.sponsor -> {
@@ -72,8 +107,19 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
                 val fragment = LegislatorFragment.newInstance(name, description)
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
             }
+            R.id.bill_full_text -> {
+                //https://www.congress.gov/bill/115th-congress/house-bill/4678?r=2
+                //https://www.congress.gov/114/bills/hr6522/BILLS-114hr6522ih.xml
+                val congress = getCongress(arguments[ARG_CONG].toString())
+                val billNumber = arguments[ARG_NAME].toString().split('.').last()
+                val chamberType = getChamberType(arguments[ARG_NAME].toString())
+                val type = getType(arguments[ARG_NAME].toString())
+                val url = "https://www.congress.gov/$type/$congress/$chamberType/$billNumber/text"
+                Log.d(TAG, url)
+                val fragment = WebFragment.newInstance(url)
+                fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
+            }
         }
-        //Log.d("BILL","Bill Clicker %d".format(p0.id))
     }
 
     override fun onAttach(context: Context?) {
@@ -98,6 +144,7 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
 
     private fun getInfo() {
         val url = "http://192.168.1.72/api/bill/getInfo.php?name=%27"+arguments[ARG_NAME]+"%27&con=%27"+arguments[ARG_CONG]+"%27"
+        Log.d(TAG,url)
         val result = URL(url).readText()
         val article = parse(result)!!.getJSONArray("value").getJSONObject(0)
         val sponsor = article.getString("FirstName")+" "+article.getString("LastName")+" ["+article.getString("party")+"-"+article.getString("state")+"]"
@@ -129,6 +176,7 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
         rootView.findViewById<TextView>(R.id.sponsor_description).text = arguments[ARG_SPOD] as String
         rootView.findViewById<ExpandableListView>(R.id.bill_details).setOnChildClickListener(this)
         rootView.findViewById<TextView>(R.id.sponsor).setOnClickListener(this)
+        rootView.findViewById<Button>(R.id.bill_full_text).setOnClickListener(this)
         if (arguments[ARG_SPON] as String == "default"){
             doAsync {
                 getInfo()

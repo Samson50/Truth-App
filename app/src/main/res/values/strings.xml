@@ -31,4 +31,5 @@
     <string name="column_total">Total</string>
     <string name="column_PAC">PAC</string>
     <string name="header_top_contributors">Top Contributors</string>
+    <string name="full_text_button">Full Text</string>
 </resources>

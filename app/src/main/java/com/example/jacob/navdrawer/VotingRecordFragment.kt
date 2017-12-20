@@ -13,6 +13,9 @@ import android.widget.*
 import kotlinx.android.synthetic.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONArray
+import org.json.JSONObject
+import java.net.URL
 
 /**
  * Created by Jacob on 12/4/2017.
@@ -39,6 +42,8 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
             return fragment
         }
     }
+
+
 
     fun setSearch(congress:String,bills:Boolean,amendments:Boolean,resolutions:Boolean,house:Boolean,senate:Boolean){
         Log.d(TAG, "In searcher")
