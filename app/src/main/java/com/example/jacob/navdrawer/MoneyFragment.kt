@@ -92,7 +92,7 @@ class MoneyFragment : Fragment(), View.OnClickListener {
     }
 
     fun getCID(fname: String, lname:String){
-        val url = "http://192.168.1.72/api/legislator/getCID.php?fname="+fname+"&lname="+lname.replace(" ","%20")
+        val url = R.string.server.toString()+"/api/legislator/getCID.php?fname="+fname+"&lname="+lname.replace(" ","%20")
         Log.d("VOTES", url)
         val result = URL(url).readText()
         CID = JSONArray(result).getJSONObject(0).getString("CID")

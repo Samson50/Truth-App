@@ -66,7 +66,7 @@ class BillsAdapter(context: Context): BaseAdapter() {
     }
 
     fun getBills() {
-        val url = "http://192.168.1.72/api/bill/getBills.php?p=$page&perp=$perPage$search"
+        val url = R.string.server.toString()+"/api/bill/getBills.php?p=$page&perp=$perPage$search"
         Log.d("BILLADAPT", url)
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONArray("value")

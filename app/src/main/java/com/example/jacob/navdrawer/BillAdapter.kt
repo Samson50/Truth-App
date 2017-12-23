@@ -39,7 +39,7 @@ class BillAdapter(context: Context): BaseExpandableListAdapter() {
     }
 
     fun getBillDetails(name: String, congress: String) {
-        val url = "http://192.168.1.72/api/bill/getBillDetails.php?name=%27$name%27&con=%27$congress%27"
+        val url = R.string.server.toString()+"/api/bill/getBillDetails.php?name=%27$name%27&con=%27$congress%27"
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONObject("value")
         val acts = json.getJSONArray("actions")
