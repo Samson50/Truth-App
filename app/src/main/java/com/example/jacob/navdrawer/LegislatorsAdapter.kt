@@ -1,11 +1,15 @@
 package com.example.jacob.navdrawer
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
+import android.widget.ImageView
 import android.widget.TextView
 import org.json.JSONException
 import org.json.JSONObject
@@ -22,6 +26,11 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
     private var hNames: MutableList<String> = mutableListOf()
     private var sDescriptions: MutableList<String> = mutableListOf()
     private var hDescriptions: MutableList<String> = mutableListOf()
+    private var sImages: MutableList<Bitmap?> = mutableListOf()
+    private var hImages: MutableList<Bitmap?> = mutableListOf()
+    private var sURL: MutableList<String> = mutableListOf()
+    private var hURL: MutableList<String> = mutableListOf()
+
 
     private fun parse(json: String): JSONObject? {
         var jsonObject: JSONObject? = null
@@ -35,7 +44,7 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
     }
 
     fun getLegislators(state: String) {
-        val url = R.string.server.toString()+"/api/legislator/getState.php?id=%27$state%27"
+        val url = "http://10.0.2.2/api/legislator/getState.php?id=%27$state%27"//R.string.server.toString()+
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONArray("value")
         var hIndex = 0
@@ -46,18 +55,27 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
             val article = json.getJSONObject(i)
             if (article is JSONObject) {
                 val name = (article.get("firstname") as String)+" "+article.get("lastname")+" ["+article.get("party")+"-$state]"
+                val image = article.getString("PicURL")
+                val bitmap = when(image) {
+                    "none" -> null
+                    else -> BitmapFactory.decodeStream(URL(image).openConnection().getInputStream())
+                }
                 val job = (article.get("job") as String)
                 if (job.contains("H",true)) {
                     hNames.add(hIndex,name)
+                    hImages.add(hIndex,bitmap)
                     val description = "Representative, "+(article.get("first") as String)+"-Present"
                     hDescriptions.add(hIndex,description)
+                    hURL.add(hIndex,image)
                     hIndex+=1
                 }
                 else {
                     Log.d("ADAPT","AddingS")
                     sNames.add(sIndex,name)
+                    sImages.add(sIndex,bitmap)
                     val description = "Senator, "+(article.get("first") as String)+"-Present"
                     sDescriptions.add(sIndex, description)
+                    sURL.add(sIndex,image)
                     sIndex+=1
                     Log.d("ADAPT","AddedS")
                 }
@@ -103,10 +121,12 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
         if (p0==0) {
             nView!!.findViewById<TextView>(R.id.legislatorName).text = sNames[p1]
             nView.findViewById<TextView>(R.id.legislatorDescription).text = sDescriptions[p1]
+            if (sImages[p1] != null) nView.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(sImages[p1])
         }
         else {
             nView!!.findViewById<TextView>(R.id.legislatorName).text = hNames[p1]
             nView.findViewById<TextView>(R.id.legislatorDescription).text = hDescriptions[p1]
+            if (hImages[p1] != null) nView.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(hImages[p1])
         }
         return nView
     }

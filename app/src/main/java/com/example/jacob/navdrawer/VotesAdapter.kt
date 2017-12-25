@@ -68,7 +68,7 @@ class VotesAdapter(context: Context): BaseAdapter() {
     fun getVotes(fname:String = firstName, lname: String = lastName) {
         firstName = fname
         lastName = lname
-        val url = R.string.server.toString()+"/api/legislator/getVotes.php?fname=%27"+fname+"%27&lname=%27"+lname.replace(" ","%20")+"%27&p=$page&perp=$perPage$search"
+        val url = "http://10.0.2.2/api/legislator/getVotes.php?fname=%27"+fname+"%27&lname=%27"+lname.replace(" ","%20")+"%27&p=$page&perp=$perPage$search"
         Log.d("VOTES", url)
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONArray("value")

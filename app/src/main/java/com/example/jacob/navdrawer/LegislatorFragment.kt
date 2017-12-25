@@ -2,12 +2,16 @@ package com.example.jacob.navdrawer
 
 import android.support.v4.app.Fragment
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import org.jetbrains.anko.doAsync
@@ -22,6 +26,8 @@ import java.net.URL
 
 class LegislatorFragment : Fragment(), View.OnClickListener {
 
+    private var imageURL = ""
+    private var image: Bitmap? = null
     private val TAG = "Fragment 1"
     //var cont: Context? = null
 
@@ -38,18 +44,27 @@ class LegislatorFragment : Fragment(), View.OnClickListener {
         }
     }
 
+    private fun getImage() {
+        val name = arguments[ARG_NAME] as String
+        val fname = (name).split(' ')[0]
+        val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
+        val url = "http://10.0.2.2/api/legislator/getPicURL.php?fname=$fname&lname=$lname"//R.string.server.toString()+
+        imageURL = URL(url).readText()
+        image = BitmapFactory.decodeStream(URL(imageURL).openConnection().getInputStream())
+    }
+
     override fun onClick(p0: View?) {
         when(p0!!.id) {
             R.id.votingRecord -> {
                 val name = arguments[ARG_NAME] as String
                 val desc = arguments[ARG_DESC] as String
-                val fragment = VotingRecordFragment.newInstance(name, desc)
+                val fragment = VotingRecordFragment.newInstance(name, desc, imageURL)
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
             }
             R.id.followTheMoney -> {
                 val name = arguments[ARG_NAME] as String
                 val desc = arguments[ARG_DESC] as String
-                val fragment = MoneyFragment.newInstance(name, desc)
+                val fragment = MoneyFragment.newInstance(name, desc, imageURL)
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
             }
         }
@@ -81,11 +96,11 @@ class LegislatorFragment : Fragment(), View.OnClickListener {
         val adapter = NewsFeedsAdapter(activity)
         val newsView = view!!.findViewById<ListView>(R.id.newsFeed)
         val name = arguments[ARG_NAME] as String
-        doAsync {
-            adapter.getArticles(name)
-            uiThread {
-                newsView.adapter = adapter
-            }
+        doAsync { adapter.getArticles(name)
+            uiThread { newsView.adapter = adapter }
+        }
+        doAsync { getImage()
+            uiThread { if (image != null) view!!.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(image) }
         }
     }
 

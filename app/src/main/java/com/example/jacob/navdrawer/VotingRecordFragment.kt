@@ -3,6 +3,8 @@ package com.example.jacob.navdrawer
 import android.support.v4.app.Fragment
 import android.content.Context
 import android.content.SearchRecentSuggestionsProvider
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -28,22 +30,33 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
     private var page = 0
     private var perPage = 20
     private var searchString = ""
+    private var image: Bitmap? = null
     //var cont: Context? = null
 
     companion object {
         private val ARG_NAME = "NAME"
         private val ARG_DESC = "DESC"
-        fun newInstance(name:String="default",description: String="default"):Fragment {//newInstance(name: String):
+        private val ARG_URL = "URL"
+        fun newInstance(name:String="default",description: String="default",imageURL:String="none"):Fragment {//newInstance(name: String):
             val args = Bundle()
             args.putString(ARG_NAME, name)
             args.putString(ARG_DESC, description)
+            args.putString(ARG_URL, imageURL)
             val fragment = VotingRecordFragment()
             fragment.arguments = args
             return fragment
         }
     }
 
-
+    private fun getImage() {
+        doAsync {
+            if (arguments[ARG_URL] != "none") image = BitmapFactory.decodeStream(URL(arguments[ARG_URL] as String).openConnection().getInputStream())
+            uiThread {
+                Log.d("VOTES", "In UI Thread")
+                if (image != null) view!!.findViewById<ImageView>(R.id.legislatorImage)
+            }
+        }
+    }
 
     fun setSearch(congress:String,bills:Boolean,amendments:Boolean,resolutions:Boolean,house:Boolean,senate:Boolean){
         Log.d(TAG, "In searcher")
@@ -168,10 +181,10 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
         super.onActivityCreated(savedInstanceState)
         val votesList = view!!.findViewById<ListView>(R.id.legis_votes)
         val voteAdapter = VotesAdapter(context)
+        val name = arguments[ARG_NAME] as String
+        val fname = (name).split(' ')[0]
+        val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
         doAsync {
-            val name = arguments[ARG_NAME] as String
-            val fname = (name).split(' ')[0]
-            val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
             Log.d("VOTES",fname)
             Log.d("VOTES", lname)
             voteAdapter.getVotes(fname,lname)
@@ -180,6 +193,7 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
                 votesList.adapter = voteAdapter
             }
         }
+        getImage()
     }
 
     override fun onStart() {

@@ -2,12 +2,15 @@ package com.example.jacob.navdrawer
 
 import android.support.v4.app.Fragment
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ExpandableListView
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import org.jetbrains.anko.doAsync

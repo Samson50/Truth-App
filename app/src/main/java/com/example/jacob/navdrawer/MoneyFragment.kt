@@ -2,6 +2,8 @@ package com.example.jacob.navdrawer
 
 import android.support.v4.app.Fragment
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.support.constraint.ConstraintLayout
 import android.text.TextUtils.replace
@@ -10,6 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import org.jetbrains.anko.doAsync
@@ -31,18 +34,31 @@ class MoneyFragment : Fragment(), View.OnClickListener {
     private var contributorTotals = mutableListOf<String>()
     private var contributorPACs = mutableListOf<String>()
     private var CID = ""
+    private var image: Bitmap? = null
     //var cont: Context? = null
 
     companion object {
         private val ARG_NAME = "NAME"
         private val ARG_DESC = "DESC"
-        fun newInstance(name:String="default",description: String="default"):Fragment {//newInstance(name: String):
+        private val ARG_URL = "URL"
+        fun newInstance(name:String="default",description: String="default",imageURL: String="none"):Fragment {//newInstance(name: String):
             val args = Bundle()
             args.putString(ARG_NAME, name)
             args.putString(ARG_DESC, description)
+            args.putString(ARG_URL, imageURL)
             val fragment = MoneyFragment()
             fragment.arguments = args
             return fragment
+        }
+    }
+
+    private fun getImage() {
+        doAsync {
+            if (arguments[ARG_URL] != "none") image = BitmapFactory.decodeStream(URL(arguments[ARG_URL] as String).openConnection().getInputStream())
+            uiThread {
+                Log.d("VOTES", "In UI Thread")
+                if (image != null) view!!.findViewById<ImageView>(R.id.legislatorImage)
+            }
         }
     }
 
@@ -163,6 +179,7 @@ class MoneyFragment : Fragment(), View.OnClickListener {
                 fillContributions(organizations, industries)
             }
         }
+        getImage()
     }
 
     override fun onStart() {
