@@ -8,17 +8,21 @@
     <TextView
         android:id="@+id/search_bills"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SEARCH ALL THE BILLS!!!1!!"
+        android:layout_height="45dp"
+        android:text="Search Legislation"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/search_option"
         android:layout_width="0dp"
         android:layout_height="40dp"
+        android:layout_marginTop="8dp"
         android:inputType="text"
         android:text="@string/search_default"
         android:textSize="14sp"
@@ -30,6 +34,7 @@
         android:id="@+id/filterButton"
         android:layout_width="120dp"
         android:layout_height="40dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/filter_default"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/search_bills"

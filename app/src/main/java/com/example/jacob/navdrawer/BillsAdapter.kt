@@ -66,7 +66,7 @@ class BillsAdapter(context: Context): BaseAdapter() {
     }
 
     fun getBills() {
-        val url = R.string.server.toString()+"/api/bill/getBills.php?p=$page&perp=$perPage$search"
+        val url = "http://10.0.2.2/api/bill/getBills.php?p=$page&perp=$perPage$search"
         Log.d("BILLADAPT", url)
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONArray("value")
@@ -77,7 +77,9 @@ class BillsAdapter(context: Context): BaseAdapter() {
                 Log.d("BILLS","In the thing %d".format(i))
                 val name = article.getString("name")
                 names.add(i,name)
-                val sponsor = article.getString("FirstName")+" "+article.getString("LastName")+" ["+article.getString("party")+"-"+article.getString("state")+"]"
+                val sponsor =
+                        if (article.getString("FirstName") != "null") article.getString("FirstName")+" "+article.getString("LastName")+" ["+article.getString("party")+"-"+article.getString("state")+"]"
+                        else "Retired"
                 Log.d("BILLS",sponsor)
                 sponsors.add(i,sponsor)
                 val job: String =

@@ -53,7 +53,7 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
             if (arguments[ARG_URL] != "none") image = BitmapFactory.decodeStream(URL(arguments[ARG_URL] as String).openConnection().getInputStream())
             uiThread {
                 Log.d("VOTES", "In UI Thread")
-                if (image != null) view!!.findViewById<ImageView>(R.id.legislatorImage)
+                if (image != null) view!!.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(image)
             }
         }
     }

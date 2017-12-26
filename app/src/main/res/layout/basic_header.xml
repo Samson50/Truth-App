@@ -8,13 +8,15 @@
     <TextView
         android:id="@+id/list_header_text"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
+        android:layout_height="45dp"
+        android:gravity="center"
         android:paddingBottom="8dp"
+        android:paddingTop="8dp"
         android:text="Senators"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="16sp"
+        android:background="#DEDEDE"
+        android:textSize="24sp"
         android:textStyle="bold"
         tools:paddingBottom="4dp" />
 

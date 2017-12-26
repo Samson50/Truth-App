@@ -53,11 +53,17 @@ class MoneyFragment : Fragment(), View.OnClickListener {
     }
 
     private fun getImage() {
+        Log.d(TAG, "URL: %s".format(arguments[ARG_URL].toString()))
         doAsync {
-            if (arguments[ARG_URL] != "none") image = BitmapFactory.decodeStream(URL(arguments[ARG_URL] as String).openConnection().getInputStream())
+            Log.d(TAG, "In Async")
+            if ((arguments[ARG_URL].toString()) != "none") {
+                image = BitmapFactory.decodeStream(URL(arguments[ARG_URL].toString()).openConnection().getInputStream())
+            }
             uiThread {
                 Log.d("VOTES", "In UI Thread")
-                if (image != null) view!!.findViewById<ImageView>(R.id.legislatorImage)
+                if (image != null) {
+                    view!!.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(image)
+                }
             }
         }
     }
@@ -108,17 +114,16 @@ class MoneyFragment : Fragment(), View.OnClickListener {
     }
 
     fun getCID(fname: String, lname:String){
-        val url = R.string.server.toString()+"/api/legislator/getCID.php?fname="+fname+"&lname="+lname.replace(" ","%20")
+        val url = "http://10.0.2.2/api/legislator/getCID.php?fname="+fname+"&lname="+lname.replace(" ","%20")
         Log.d("VOTES", url)
         val result = URL(url).readText()
         CID = JSONArray(result).getJSONObject(0).getString("CID")
-
     }
 
     private fun getContributions(fname:String,lname:String) {
         Log.d(TAG,fname)
         Log.d(TAG,lname)
-        val url = "http://192.168.1.72/api/legislator/getContributions.php?fname=$fname&lname="+lname.replace(" ","%20")
+        val url = "http://10.0.2.2/api/legislator/getContributions.php?fname=$fname&lname="+lname.replace(" ","%20")
         val result = URL(url).readText()
         val json = parse(result)!!.getJSONArray("value")
         Log.d(TAG, "Items: %d".format(json.length()))
@@ -169,18 +174,18 @@ class MoneyFragment : Fragment(), View.OnClickListener {
         super.onActivityCreated(savedInstanceState)
         val organizations = view!!.findViewById<ConstraintLayout>(R.id.contributor1)
         val industries = view!!.findViewById<ConstraintLayout>(R.id.contributor2)
+        getImage()
         doAsync {
             val name = arguments[ARG_NAME] as String
             val fname = (name).split(' ')[0]
-            val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
-            getCID(fname,lname)
+            val lname = (name).split(' ').slice(IntRange(1, name.split(' ').size - 2)).reduce { fn, next -> fn + " " + next }
+            getCID(fname, lname)
             getContributions(fname, lname)
             uiThread {
                 Log.d("VOTES", "In UI Thread")
                 fillContributions(organizations, industries)
             }
         }
-        getImage()
     }
 
     override fun onStart() {

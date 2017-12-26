@@ -25,6 +25,9 @@ import java.net.URL
 class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChildClickListener {
 
     private val TAG = "Fragment 4"
+    private var title = ""
+    private var sponsor = ""
+    private var sponsorDescription = ""
     //private var toggler: ExpandableRelativeLayout? = null
     //var cont: Context? = null
 
@@ -143,28 +146,28 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
     }
 
     private fun getInfo() {
-        val url = "http://192.168.1.72/api/bill/getInfo.php?name=%27"+arguments[ARG_NAME]+"%27&con=%27"+arguments[ARG_CONG]+"%27"
+        val url = "http://192.168.1.72/api/bill/getInfo.php?name="+arguments[ARG_NAME]+"&con="+arguments[ARG_CONG]
         Log.d(TAG,url)
         val result = URL(url).readText()
         val article = parse(result)!!.getJSONArray("value").getJSONObject(0)
-        val sponsor = article.getString("FirstName")+" "+article.getString("LastName")+" ["+article.getString("party")+"-"+article.getString("state")+"]"
-        Log.d("VOTES",sponsor)
-        arguments.putString(ARG_SPON,sponsor)//= sponsor
+        val sponsorFull = article.getString("FirstName")+" "+article.getString("LastName")+" ["+article.getString("party")+"-"+article.getString("state")+"]"
+        Log.d("VOTES",sponsorFull)
+        sponsor = sponsorFull//= sponsor
         val job: String =
                 if (article.getString("job").contains("H",true)) "Representative, "
                 else "Senator, "
         Log.d("VOTES",job)
         val spon_des = job+article.getString("first")+"-Present"
         Log.d("VOTES", spon_des)
-        arguments.putString(ARG_SPOD,spon_des)
+        sponsorDescription = spon_des
         val summary = article.getString("summary")
-        arguments.putString(ARG_SUMM,summary)
+        title = summary
     }
 
     private fun updateInfo() {
-        view!!.findViewById<TextView>(R.id.sponsor).text = arguments[ARG_SPON] as String
-        view!!.findViewById<TextView>(R.id.sponsor_description).text = arguments[ARG_SPOD] as String
-        view!!.findViewById<TextView>(R.id.bill_title).text = arguments[ARG_SUMM] as String
+        view!!.findViewById<TextView>(R.id.sponsor).text = sponsor
+        view!!.findViewById<TextView>(R.id.sponsor_description).text = sponsorDescription
+        view!!.findViewById<TextView>(R.id.bill_title).text = title
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -186,11 +189,6 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
                 }
             }
         }
-        //val voteList = rootView.findViewById<ListView>(R.id.legis_votes)
-        //voteList.setOnClickListener(this)
-        //val toggleButton = rootView.findViewById<TextView>(R.id.expand_search)
-        //toggler = rootView.findViewById(R.id.search_items)
-        //toggleButton.setOnClickListener(this)
         return rootView
     }
 
