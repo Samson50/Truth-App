@@ -69,6 +69,7 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
+        (activity as NavDrawerActivity).setTitle("Home")
         option = rootView.findViewById(R.id.state_select)
         option.adapter = ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,fullStates)
         option.onItemSelectedListener = this

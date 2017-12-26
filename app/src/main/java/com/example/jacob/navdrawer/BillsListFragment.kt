@@ -145,6 +145,7 @@ class BillsListFragment : Fragment(), View.OnClickListener, AdapterView.OnItemCl
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
+        (activity as NavDrawerActivity).setTitle("Search Bills")
         val rootView = inflater!!.inflate(R.layout.fragment_list_bills, container, false)
         rootView.findViewById<ListView>(R.id.bills_found).onItemClickListener = this//setOnItemClickListener(this)
         rootView.findViewById<TextView>(R.id.expand_search).setOnClickListener(this)

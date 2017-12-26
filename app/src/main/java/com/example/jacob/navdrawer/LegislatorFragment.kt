@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
@@ -45,8 +46,8 @@ class LegislatorFragment : Fragment(), View.OnClickListener, AdapterView.OnItemC
         val name = arguments[ARG_NAME] as String
         val fname = (name).split(' ')[0]
         val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
-        val url = "http://10.0.2.2/api/legislator/getPicURL.php?fname=$fname&lname=$lname"//R.string.server.toString()+
-        imageURL = JSONObject(URL(url).readText()).getString("PicURL")
+        val url = "http://10.0.2.2/api/legislator/getPicURL.php?fname=$fname&lname=$lname" //R.string.server.toString()+
+        imageURL = JSONArray(URL(url).readText()).getJSONObject(0).getString("PicURL")
         Log.d(TAG, "imageURL %s".format(imageURL))
         if (imageURL != "none") image = BitmapFactory.decodeStream(URL(imageURL).openConnection().getInputStream())
     }
@@ -87,6 +88,7 @@ class LegislatorFragment : Fragment(), View.OnClickListener, AdapterView.OnItemC
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
+        (activity as NavDrawerActivity).setTitle("Legislator Profile")
         val rootView = inflater!!.inflate(R.layout.fragment_legislator_profile, container, false)
         rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String

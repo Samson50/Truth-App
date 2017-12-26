@@ -164,6 +164,7 @@ class VotingRecordFragment : Fragment(), View.OnClickListener, AdapterView.OnIte
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
+        (activity as NavDrawerActivity).setTitle("Voting Record")
         val rootView = inflater!!.inflate(R.layout.fragment_voting_record, container, false)
         rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String

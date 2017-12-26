@@ -7,36 +7,77 @@
     android:layout_height="match_parent"
     tools:context="com.example.jacob.navdrawer.NavDrawerActivity">
 
-    <ListView
-        android:id="@+id/home_news"
+    <ImageView
+        android:id="@+id/selectorBackground"
         android:layout_width="match_parent"
-        android:layout_height="290dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginStart="4dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_height="65dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/state_select"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/state_select"
+        app:srcCompat="@drawable/background_custom_1" />
 
     <Spinner
         android:id="@+id/state_select"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="28dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/state_display"
+        android:layout_width="0dp"
+        android:layout_height="28dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="48dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/quoteText" />
+
+    <ListView
+        android:id="@+id/home_news"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/selectorBackground"
+        app:layout_constraintVertical_bias="0.589" />
 
     <TextView
         android:id="@+id/state_display"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:text="TextView"
-        app:layout_constraintBottom_toTopOf="@+id/home_news"
-        app:layout_constraintEnd_toEndOf="@+id/state_select"
+        android:layout_marginBottom="2dp"
+        android:text="Select a State"
+        android:textColor="@android:color/black"
+        android:textSize="28sp"
+        app:layout_constraintBottom_toTopOf="@+id/state_select"
         app:layout_constraintStart_toStartOf="@+id/state_select" />
+
+    <TextView
+        android:id="@+id/quoteText"
+        android:layout_width="302dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text='     "Ignorance, the root and stem of all evil."'
+        android:textAppearance="@style/TextAppearance.AppCompat.Title"
+        android:textColor="@android:color/black"
+        android:textSize="36sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/quoteAuthor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="16dp"
+        android:text="- Plato"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/quoteText"
+        app:layout_constraintEnd_toEndOf="@+id/quoteText"
+        app:layout_constraintTop_toBottomOf="@+id/quoteText" />
+
 </android.support.constraint.ConstraintLayout>

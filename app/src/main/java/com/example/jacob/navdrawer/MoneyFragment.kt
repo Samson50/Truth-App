@@ -156,6 +156,7 @@ class MoneyFragment : Fragment(), View.OnClickListener {
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
+        (activity as NavDrawerActivity).setTitle("Campaign Contributions")
         val rootView = inflater!!.inflate(R.layout.fragment_contributions, container, false)
         rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String

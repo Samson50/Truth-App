@@ -169,6 +169,7 @@ class BillFragment : Fragment(), View.OnClickListener, ExpandableListView.OnChil
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
+        (activity as NavDrawerActivity).setTitle("Bill Profile")
         val rootView = inflater!!.inflate(R.layout.fragment_bill, container, false)
         rootView.findViewById<TextView>(R.id.bill_name).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.sponsor).text = arguments[ARG_SPON] as String

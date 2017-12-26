@@ -59,6 +59,7 @@ class LegislatorsListFragment : Fragment(), ExpandableListView.OnChildClickListe
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?): View {
         Log.d(TAG, "onCreateView")
+        (activity as NavDrawerActivity).setTitle("State Legislators")
         val rootView = inflater!!.inflate(R.layout.fragment_list_legislators, container, false)
         val expandView = rootView.findViewById<ExpandableListView>(R.id.legislators)
         //toggler = rootView.findViewById(R.id.search_items)
