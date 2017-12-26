@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import android.widget.BaseExpandableListAdapter
 import android.widget.ImageView
 import android.widget.TextView
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.json.JSONException
 import org.json.JSONObject
 import java.net.URL
@@ -26,8 +28,8 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
     private var hNames: MutableList<String> = mutableListOf()
     private var sDescriptions: MutableList<String> = mutableListOf()
     private var hDescriptions: MutableList<String> = mutableListOf()
-    private var sImages: MutableList<Bitmap?> = mutableListOf()
-    private var hImages: MutableList<Bitmap?> = mutableListOf()
+    private var sImageURL: MutableList<String> = mutableListOf()
+    private var hImageURL: MutableList<String> = mutableListOf()
     private var sURL: MutableList<String> = mutableListOf()
     private var hURL: MutableList<String> = mutableListOf()
 
@@ -56,14 +58,10 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
             if (article is JSONObject) {
                 val name = (article.get("firstname") as String)+" "+article.get("lastname")+" ["+article.get("party")+"-$state]"
                 val image = article.getString("PicURL")
-                val bitmap = when(image) {
-                    "none" -> null
-                    else -> BitmapFactory.decodeStream(URL(image).openConnection().getInputStream())
-                }
                 val job = (article.get("job") as String)
                 if (job.contains("H",true)) {
                     hNames.add(hIndex,name)
-                    hImages.add(hIndex,bitmap)
+                    hImageURL.add(hIndex,image)
                     val description = "Representative, "+(article.get("first") as String)+"-Present"
                     hDescriptions.add(hIndex,description)
                     hURL.add(hIndex,image)
@@ -72,7 +70,7 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
                 else {
                     Log.d("ADAPT","AddingS")
                     sNames.add(sIndex,name)
-                    sImages.add(sIndex,bitmap)
+                    sImageURL.add(sIndex,image)
                     val description = "Senator, "+(article.get("first") as String)+"-Present"
                     sDescriptions.add(sIndex, description)
                     sURL.add(sIndex,image)
@@ -121,12 +119,18 @@ class LegislatorsAdapter(context: Context): BaseExpandableListAdapter() {
         if (p0==0) {
             nView!!.findViewById<TextView>(R.id.legislatorName).text = sNames[p1]
             nView.findViewById<TextView>(R.id.legislatorDescription).text = sDescriptions[p1]
-            if (sImages[p1] != null) nView.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(sImages[p1])
+            if (sImageURL[p1] != "none") doAsync {
+                val image = BitmapFactory.decodeStream(URL(sImageURL[p1]).openConnection().getInputStream())
+                uiThread { nView.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(image) }
+            }
         }
         else {
             nView!!.findViewById<TextView>(R.id.legislatorName).text = hNames[p1]
             nView.findViewById<TextView>(R.id.legislatorDescription).text = hDescriptions[p1]
-            if (hImages[p1] != null) nView.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(hImages[p1])
+            if (hImageURL[p1] != "none") doAsync {
+                val image = BitmapFactory.decodeStream(URL(hImageURL[p1]).openConnection().getInputStream())
+                uiThread { nView.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(image) }
+            }
         }
         return nView
     }

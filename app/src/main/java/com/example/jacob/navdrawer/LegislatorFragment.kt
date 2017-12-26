@@ -10,10 +10,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.json.JSONException
@@ -24,7 +21,7 @@ import java.net.URL
  * Created by Jacob on 12/4/2017.
  */
 
-class LegislatorFragment : Fragment(), View.OnClickListener {
+class LegislatorFragment : Fragment(), View.OnClickListener, AdapterView.OnItemClickListener {
 
     private var imageURL = ""
     private var image: Bitmap? = null
@@ -49,8 +46,16 @@ class LegislatorFragment : Fragment(), View.OnClickListener {
         val fname = (name).split(' ')[0]
         val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
         val url = "http://10.0.2.2/api/legislator/getPicURL.php?fname=$fname&lname=$lname"//R.string.server.toString()+
-        imageURL = URL(url).readText()
-        image = BitmapFactory.decodeStream(URL(imageURL).openConnection().getInputStream())
+        imageURL = JSONObject(URL(url).readText()).getString("PicURL")
+        Log.d(TAG, "imageURL %s".format(imageURL))
+        if (imageURL != "none") image = BitmapFactory.decodeStream(URL(imageURL).openConnection().getInputStream())
+    }
+
+    override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+        val link = p1!!.findViewById<TextView>(R.id.hyperLink).text.toString()
+        val fragment = WebFragment.newInstance(link)
+        fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
+        Log.d("Legislator", "clicked %d".format(p2))//"Vote Clicker %d".format(p2))
     }
 
     override fun onClick(p0: View?) {
@@ -85,6 +90,7 @@ class LegislatorFragment : Fragment(), View.OnClickListener {
         val rootView = inflater!!.inflate(R.layout.fragment_legislator_profile, container, false)
         rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String
+        rootView.findViewById<ListView>(R.id.newsFeed).onItemClickListener = this
         rootView.findViewById<Button>(R.id.votingRecord).setOnClickListener(this)
         rootView.findViewById<Button>(R.id.followTheMoney).setOnClickListener(this)
         return rootView

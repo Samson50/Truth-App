@@ -17,12 +17,18 @@ import org.jetbrains.anko.uiThread
 /**
  * Created by Jacob on 12/4/2017.
  */
-
 class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private val TAG = "Fragment 2"
     lateinit var option: Spinner
-    private val states = arrayOf("AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY")
+    private val states = arrayOf("AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS",
+            "KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR",
+            "PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY")
+    private val fullStates = arrayOf("Alabama","Alaska","Arizona","Arkansas","California","Colorado","Connecticut","Delaware",
+            "Florida","Georgia","Hawaii","Idaho","Illinois","Indiana","Iowa","Kansas","Louisiana","Maine","Maryland","Massachusetts",
+            "Michigan","Minnesota","Mississippi","Missouri","Montana","Nebraska","Nevada","New Hampshire","New Jersey","New Mexico",
+            "New York","North Carolina","North Dakota","Ohio","Oklahoma","Oregon","Pennsylvania","Rhode Island","South Carolina",
+            "South Dakota","Tennessee","Texas","Utah","Vermont","Washington","West Virginia","Wisconsin","Wyoming")
     private lateinit var drawer: NavDrawerActivity
     //var cont: Context? = null
 
@@ -64,7 +70,7 @@ class HomeFragment : Fragment(), AdapterView.OnItemSelectedListener {
         Log.d(TAG, "onCreateView")
         val rootView = inflater!!.inflate(R.layout.fragment_home, container, false)
         option = rootView.findViewById(R.id.state_select)
-        option.adapter = ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,states)
+        option.adapter = ArrayAdapter<String>(context,android.R.layout.simple_list_item_1,fullStates)
         option.onItemSelectedListener = this
         return rootView
     }
