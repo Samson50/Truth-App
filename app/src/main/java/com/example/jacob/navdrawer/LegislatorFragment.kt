@@ -22,11 +22,13 @@ import java.net.URL
  * Created by Jacob on 12/4/2017.
  */
 
-class LegislatorFragment : Fragment(), View.OnClickListener, AdapterView.OnItemClickListener {
+class LegislatorFragment : Fragment(), View.OnClickListener {
 
     private var imageURL = ""
     private var image: Bitmap? = null
     private val TAG = "Fragment 1"
+    private var fname = "none"
+    private var lname = "none"
     //var cont: Context? = null
 
     companion object {
@@ -44,19 +46,17 @@ class LegislatorFragment : Fragment(), View.OnClickListener, AdapterView.OnItemC
 
     private fun getImage() {
         val name = arguments[ARG_NAME] as String
-        val fname = (name).split(' ')[0]
-        val lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
+        fname = (name).split(' ')[0]
+        lname = (name).split(' ').slice(IntRange(1,name.split(' ').size-2)).reduce{fn, next -> fn+" "+next}
         val url = "http://10.0.2.2/api/legislator/getPicURL.php?fname=$fname&lname=$lname" //R.string.server.toString()+
         imageURL = JSONArray(URL(url).readText()).getJSONObject(0).getString("PicURL")
         Log.d(TAG, "imageURL %s".format(imageURL))
         if (imageURL != "none") image = BitmapFactory.decodeStream(URL(imageURL).openConnection().getInputStream())
     }
 
-    override fun onItemClick(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-        val link = p1!!.findViewById<TextView>(R.id.hyperLink).text.toString()
+    fun startWebView(link:String){
         val fragment = WebFragment.newInstance(link)
         fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
-        Log.d("Legislator", "clicked %d".format(p2))//"Vote Clicker %d".format(p2))
     }
 
     override fun onClick(p0: View?) {
@@ -72,6 +72,16 @@ class LegislatorFragment : Fragment(), View.OnClickListener, AdapterView.OnItemC
                 val desc = arguments[ARG_DESC] as String
                 val fragment = MoneyFragment.newInstance(name, desc, imageURL)
                 fragmentManager.beginTransaction().replace(R.id.flContent, fragment).addToBackStack(null).commit()
+            }
+            R.id.news_roller -> {
+                Log.d(TAG, "IN THE News")
+                val fragment = NewsFeedFragment.newInstance(arguments[ARG_NAME] as String)
+                childFragmentManager.beginTransaction().replace(R.id.roller_layout, fragment, "FILTER").commit()
+            }
+            R.id.committees_roller -> {
+                Log.d(TAG,"IN THE Committee")
+                val fragment = CommitteesFragment.newInstance(fname, lname)
+                childFragmentManager.beginTransaction().replace(R.id.roller_layout, fragment, "FILTER").commit()
             }
         }
     }
@@ -92,7 +102,8 @@ class LegislatorFragment : Fragment(), View.OnClickListener, AdapterView.OnItemC
         val rootView = inflater!!.inflate(R.layout.fragment_legislator_profile, container, false)
         rootView.findViewById<TextView>(R.id.legislatorName).text = arguments[ARG_NAME] as String
         rootView.findViewById<TextView>(R.id.legislatorDescription).text = arguments[ARG_DESC] as String
-        rootView.findViewById<ListView>(R.id.newsFeed).onItemClickListener = this
+        rootView.findViewById<TextView>(R.id.news_roller).setOnClickListener(this)
+        rootView.findViewById<TextView>(R.id.committees_roller).setOnClickListener(this)
         rootView.findViewById<Button>(R.id.votingRecord).setOnClickListener(this)
         rootView.findViewById<Button>(R.id.followTheMoney).setOnClickListener(this)
         return rootView
@@ -101,12 +112,9 @@ class LegislatorFragment : Fragment(), View.OnClickListener, AdapterView.OnItemC
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         Log.d(TAG, "onActivityCreated")
         super.onActivityCreated(savedInstanceState)
-        val adapter = NewsFeedsAdapter(activity)
-        val newsView = view!!.findViewById<ListView>(R.id.newsFeed)
         val name = arguments[ARG_NAME] as String
-        doAsync { adapter.getArticles(name)
-            uiThread { newsView.adapter = adapter }
-        }
+        val rollerFragment = NewsFeedFragment.newInstance(name)
+        childFragmentManager.beginTransaction().replace(R.id.roller_layout, rollerFragment, "FILTER").commit()
         doAsync { getImage()
             uiThread { if (image != null) view!!.findViewById<ImageView>(R.id.legislatorImage).setImageBitmap(image) }
         }
